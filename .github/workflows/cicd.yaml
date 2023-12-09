@@ -48,6 +48,9 @@ jobs:
     needs: lint-code
 
     steps:
+    - name: Download code
+      uses: actions/checkout@v4
+
     - name: Build docker images
       run: docker build -t local < Dockerfile
 
