@@ -66,7 +66,7 @@ jobs:
     name: CD Deploy to Production
     runs-on: ubuntu-22.04
     environment: prd
-    needs: ci-lint-code
+    needs: ci-build-and-test
 
     steps:
     - name: Download code
