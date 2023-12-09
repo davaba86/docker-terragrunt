@@ -9,10 +9,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  lint-code:
-    name: Lint Code
+  ci-lint-code:
+    name: CI Lint Code
     runs-on: ubuntu-22.04
-    # environment: acc
+    environment: dev
 
     steps:
     - name: Download code
@@ -41,11 +41,11 @@ jobs:
       with:
         dockerfile: Dockerfile
 
-  build-and-test:
-    name: Build and Test
+  ci-build-and-test:
+    name: CI Build and Test
     runs-on: ubuntu-22.04
     environment: acc
-    needs: lint-code
+    needs: ci-lint-code
 
     steps:
     - name: Download code
@@ -58,35 +58,37 @@ jobs:
         tags: local
 
     - name: Spawn container from Docker image
-      run: docker run local:latest terragrunt --version
+      run: |
+        docker run local:latest terraform --version
+        docker run local:latest terragrunt --version
 
-  # deploy-to-prd:
-  #   name: Deploy to Production
-  #   runs-on: ubuntu-22.04
-  #   environment: prd
-  #   needs: lint-code!
+  cd-deploy-to-prd:
+    name: CD Deploy to Production
+    runs-on: ubuntu-22.04
+    environment: prd
+    needs: ci-lint-code
 
-  #   steps:
-  #   - name: Download code
-  #     uses: actions/checkout@v4
+    steps:
+    - name: Download code
+      uses: actions/checkout@v4
 
-  #   - name: Set up QEMU
-  #     uses: docker/setup-qemu-action@v3
+    # - name: Set up QEMU
+    #   uses: docker/setup-qemu-action@v3
 
-  #   - name: Set up Docker Buildx
-  #     uses: docker/setup-buildx-action@v3
+    # - name: Set up Docker Buildx
+    #   uses: docker/setup-buildx-action@v3
 
-  #   - name: Login to Docker Hub
-  #     uses: docker/login-action@v3
-  #     with:
-  #       username: ${{ secrets.DOCKERHUB_USERNAME }}
-  #       password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-  #   - name: Build and push
-  #     uses: docker/build-push-action@v5
-  #     with:
-  #       push: true
-  #       tags: davaba/terraform:latest
+    - name: Build and push
+      uses: docker/build-push-action@v5
+      with:
+        push: true
+        tags: davaba/terraform:latest
 
   # prd-test:
   #   name: Production Test
