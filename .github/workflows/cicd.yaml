@@ -8,6 +8,9 @@ on:
     - "dev-*"
   workflow_dispatch:
 
+env:
+  DOCKER_REPO: davaba/terraform
+
 jobs:
   ci-lint-code:
     name: CI Lint Code
@@ -82,7 +85,7 @@ jobs:
       uses: docker/build-push-action@v5
       with:
         push: true
-        tags: davaba/terraform:latest
+        tags: $DOCKER_REPO:latest
 
   prd-test:
     name: CD Production Test
@@ -93,5 +96,5 @@ jobs:
     steps:
     - name: Spawn container from public Docker image
       run: |
-        docker run davaba/terraform:latest terraform --version
-        docker run davaba/terraform:latest terragrunt --version
+        docker run $DOCKER_REPO:latest terraform --version
+        docker run $DOCKER_REPO:latest terragrunt --version
