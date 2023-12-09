@@ -93,6 +93,9 @@ jobs:
       image: davaba/terraform
 
     steps:
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
     - name: Spawn container from public Docker image
       run: |
         docker run davaba/terraform:latest terraform --version
