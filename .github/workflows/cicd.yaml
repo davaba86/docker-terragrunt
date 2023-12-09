@@ -58,7 +58,7 @@ jobs:
         tags: local
 
     - name: Run tests
-      run: docker ps -a
+      run: docker images
 
   # deploy-to-prd:
   #   name: Deploy to Production
