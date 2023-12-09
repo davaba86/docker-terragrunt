@@ -51,14 +51,14 @@ jobs:
     - name: Download code
       uses: actions/checkout@v4
 
-    - name: Build
+    - name: Build Docker image
       uses: docker/build-push-action@v5
       with:
         push: false
         tags: local
 
-    - name: Run tests
-      run: docker images
+    - name: Spawn container from Docker image
+      run: docker run local:latest terragrunt --version
 
   # deploy-to-prd:
   #   name: Deploy to Production
