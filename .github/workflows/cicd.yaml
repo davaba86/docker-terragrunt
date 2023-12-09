@@ -57,6 +57,9 @@ jobs:
         push: false
         tags: local
 
+    - name: Run tests
+      run: docker ps -a
+
   # deploy-to-prd:
   #   name: Deploy to Production
   #   runs-on: ubuntu-22.04
